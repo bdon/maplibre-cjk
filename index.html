@@ -47,20 +47,83 @@
         bottom: 0;
         width: 100%;
       }
+
+      .version {
+        position: absolute;
+        z-index: 99999999;
+        font-size: 36px;
+        top: 12px;
+      }
+
+      .versionOld {
+        left: 1%;
+      }
+
+      .versionNew {
+        right: 1%;
+      }
     </style>
     <script src="https://unpkg.com/@maplibre/maplibre-gl-compare@0.5.0/dist/maplibre-gl-compare.js"></script>
     <link href="https://unpkg.com/@maplibre/maplibre-gl-compare@0.5.0/dist/maplibre-gl-compare.css" rel='stylesheet' />
     <div id="comparison-container">
-      <div id="before" class="map"></div>
-      <div id="after" class="map"></div>
+      <div id="before" class="map">
+        <div class="version versionOld">maplibre v3.3.0</div>
+      </div>
+
+      <div id="after" class="map">
+        <div class="version versionNew">maplibre-cjk patch</div>
+      </div>
     </div>
     <script>
       const CENTER = [134.5, 33.15];
       const ZOOM = 4;
 
+      const STYLE = {
+        version: 8,
+        glyphs: "https://cdn.protomaps.com/fonts/pbf/{fontstack}/{range}.pbf",
+        sprite: "https://r2-public.protomaps.com/tmp/sprites20230815",
+        sources: {
+          protomaps: {
+            type: 'vector',
+            tiles: ["https://api.protomaps.com/tiles/v2/{z}/{x}/{y}.mvt?key=1003762824b9687f"]
+          }
+        },
+        layers: [
+          {
+            id: 'water',
+            type: "fill",
+            source: 'protomaps',
+            'source-layer': 'water',
+            paint: {
+              'fill-color': "#deebf7"
+            }
+          },
+          {
+            id: 'places',
+            type: "symbol",
+            source: 'protomaps',
+            'source-layer': 'places',
+            layout: {
+              'text-field': [
+                "format",
+                ["get","name"], {'font-scale':1.2},
+                '\n', {},
+                ["get","name:en"], {'font-scale':0.8}
+              ],
+              'text-font': ['Barlow Regular'],
+              'text-size': 24
+            },
+            paint: {
+              'text-halo-width':2,
+              'text-halo-color':'white'
+            }
+          }
+        ]
+      }
+
       var beforeMap = new maplibregl.Map({
         container: "before",
-        style: "https://demotiles.maplibre.org/style.json",
+        style: STYLE,
         center: CENTER,
         zoom: ZOOM,
         hash: true
@@ -68,7 +131,7 @@
 
       var afterMap = new maplibregl.Map({
         container: "after",
-        style: "https://demotiles.maplibre.org/style.json",
+        style: STYLE,
         center: CENTER,
         zoom: ZOOM
       });
