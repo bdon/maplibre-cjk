@@ -50,10 +50,14 @@
       }
 
       .version {
+        color: cadetblue;
         position: absolute;
         z-index: 99999999;
-        font-size: 36px;
+        font-size: 24px;
         top: 12px;
+        padding: 4px;
+        background-color: white;
+        line-height:1.2em;
       }
 
       .versionOld {
@@ -72,10 +76,11 @@
       </div>
 
       <div id="after" class="map">
-        <div class="version versionNew">maplibre-cjk patch</div>
+        <div class="version versionNew">maplibre-cjk patch<br/><a target="_blank" href="https://github.com/bdon/maplibre-cjk">github.com/bdon/maplibre-cjk</a></div>
       </div>
     </div>
     <script>
+      console.log(maplibregl_cjk);
       const CENTER = [134.5, 33.15];
       const ZOOM = 4;
 
@@ -86,7 +91,8 @@
         sources: {
           protomaps: {
             type: 'vector',
-            tiles: ["https://api.protomaps.com/tiles/v2/{z}/{x}/{y}.mvt?key=1003762824b9687f"]
+            tiles: ["https://api.protomaps.com/tiles/v2/{z}/{x}/{y}.mvt?key=1003762824b9687f"],
+            attribution: 'Protomaps © <a href="https://openstreetmap.org">OpenStreetMap</a>'
           }
         },
         layers: [
@@ -100,19 +106,63 @@
             }
           },
           {
-            id: 'places',
+            id: 'countries',
             type: "symbol",
             source: 'protomaps',
             'source-layer': 'places',
+            filter: ["==",["get","pmap:kind"], "country"],
             layout: {
               'text-field': [
                 "format",
                 ["get","name"], {'font-scale':1.2},
                 '\n', {},
-                ["get","name:en"], {'font-scale':0.8}
+                ["get","name:en"], {'font-scale':0.5}
+              ],
+              'text-font': ['Barlow Regular'],
+              'text-size': 28
+            },
+            paint: {
+              'text-halo-width':2,
+              'text-halo-color':'white'
+            }
+          },
+          {
+            id: 'states',
+            type: "symbol",
+            source: 'protomaps',
+            'source-layer': 'places',
+            filter: ["==",["get","pmap:kind"], "state"],
+            layout: {
+              'text-field': [
+                "format",
+                ["get","name"], {'font-scale':1.2},
+                '\n', {},
+                ["get","name:en"], {'font-scale':0.5}
               ],
               'text-font': ['Barlow Regular'],
               'text-size': 24
+            },
+            paint: {
+              'text-halo-width':2,
+              'text-halo-color':'white',
+              'text-color': "#555"
+            }
+          },
+          {
+            id: 'cities',
+            type: "symbol",
+            source: 'protomaps',
+            'source-layer': 'places',
+            filter: ["==",["get","pmap:kind"], "city"],
+            layout: {
+              'text-field': [
+                "format",
+                ["get","name"], {'font-scale':1.2},
+                '\n', {},
+                ["get","name:en"], {'font-scale':0.5}
+              ],
+              'text-font': ['Barlow Regular'],
+              'text-size': ["interpolate", ["linear"], ["zoom"], 0, 12, 9, 30]
             },
             paint: {
               'text-halo-width':2,
@@ -135,6 +185,14 @@
         style: STYLE,
         center: CENTER,
         zoom: ZOOM
+      });
+
+      afterMap.on('idle', () => {
+        beforeMap.resize();
+      });
+
+      beforeMap.on('idle', () => {
+        afterMap.resize();
       });
 
       var container = "#comparison-container";
