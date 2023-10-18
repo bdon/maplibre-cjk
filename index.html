@@ -7,10 +7,9 @@
       name="viewport"
       content="initial-scale=1,maximum-scale=1,user-scalable=no"
     />
-    <script src="https://unpkg.com/maplibre-gl@3.3.0/dist/maplibre-gl.js"></script>
-    <script src="maplibre-gl-cjk.js"></script>
+    <script src="https://unpkg.com/maplibre-gl@3.4.0/dist/maplibre-gl.js"></script>
     <link
-      href="https://unpkg.com/maplibre-gl@3.3.0/dist/maplibre-gl.css"
+      href="https://unpkg.com/maplibre-gl@3.5.1/dist/maplibre-gl.css"
       rel="stylesheet"
     />
     <style>
@@ -72,15 +71,15 @@
     <link href="https://unpkg.com/@maplibre/maplibre-gl-compare@0.5.0/dist/maplibre-gl-compare.css" rel='stylesheet' />
     <div id="comparison-container">
       <div id="before" class="map">
-        <div class="version versionOld">maplibre v3.3.0</div>
+        <div class="version versionOld">maplibre v3.4.0</div>
       </div>
 
       <div id="after" class="map">
-        <div class="version versionNew">maplibre-cjk patch<br/><a target="_blank" href="https://github.com/bdon/maplibre-cjk">github.com/bdon/maplibre-cjk</a></div>
+        <div class="version versionNew">maplibre 3.5.1</div>
       </div>
     </div>
-    <script>
-      console.log(maplibregl_cjk);
+    <script type="module">
+      import maplibregl_351 from 'https://cdn.skypack.dev/maplibre-gl@3.5.1';
       const CENTER = [134.5, 33.15];
       const ZOOM = 4;
 
@@ -180,7 +179,7 @@
         hash: true
       });
 
-      var afterMap = new maplibregl_cjk.Map({
+      var afterMap = new maplibregl_351.Map({
         container: "after",
         style: STYLE,
         center: CENTER,
